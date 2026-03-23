@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Email Address
+    |--------------------------------------------------------------------------
+    |
+    | This email address is used for critical system alerts such as job
+    | failures. Admin alerts will be sent to this address.
+    |
+    */
+
+    'admin_email' => env('MAIL_ADMIN_EMAIL', env('MAIL_FROM_ADDRESS', 'admin@example.com')),
+
 ];

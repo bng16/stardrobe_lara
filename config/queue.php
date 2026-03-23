@@ -42,6 +42,7 @@ return [
             'queue' => env('DB_QUEUE', 'default'),
             'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
             'after_commit' => false,
+            'backoff' => [10, 30, 60], // Exponential backoff: 10s, 30s, 60s
         ],
 
         'beanstalkd' => [
@@ -71,6 +72,7 @@ return [
             'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
             'block_for' => null,
             'after_commit' => false,
+            'backoff' => [10, 30, 60], // Exponential backoff: 10s, 30s, 60s
         ],
 
         'deferred' => [
