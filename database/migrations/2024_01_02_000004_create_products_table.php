@@ -18,8 +18,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('category', 100)->nullable();
             $table->decimal('reserve_price', 10, 2);
-            $table->timestamp('auction_start');
-            $table->timestamp('auction_end');
+            $table->timestamp('auction_start')->nullable();
+            $table->timestamp('auction_end')->nullable();
             $table->enum('status', ['draft', 'active', 'ended', 'sold', 'unsold'])->default('draft');
             $table->uuid('winning_bid_id')->nullable();
             $table->timestamps();

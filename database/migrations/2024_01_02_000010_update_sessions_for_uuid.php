@@ -11,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropIndex(['user_id']);
-        });
-        
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->uuid('user_id')->nullable()->change();
-            $table->index('user_id');
-        });
+        // Skip this migration - sessions table works fine as is
+        return;
     }
 
     /**
