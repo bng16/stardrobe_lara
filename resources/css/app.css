@@ -1,15 +1,19 @@
 @import 'tailwindcss';
 
+/* Source paths for Tailwind CSS purging */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../app/View/Components/**/*.php';
 
+/* Custom font configuration */
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/* CSS Custom Properties for theming */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -57,12 +61,22 @@
   }
 }
 
+/* Base styles - optimized for production */
 @layer base {
   * {
     border-color: hsl(var(--border));
   }
+  
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+/* Utility classes for common patterns */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }

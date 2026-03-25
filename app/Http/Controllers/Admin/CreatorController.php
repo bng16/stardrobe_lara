@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendCreatorInviteEmail;
+use App\Models\CreatorPrivateInfo;
 use App\Models\CreatorShop;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -12,8 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\View\View;
 
 class CreatorController extends Controller
 {
@@ -25,16 +25,30 @@ class CreatorController extends Controller
     /**
      * Display a listing of creators.
      */
-    public function index(): Response
+    public function index(): View
     {
         $creators = User::where('role', UserRole::Creator)
             ->with('creatorShop')
             ->latest()
             ->paginate(20);
 
-        return Inertia::render('Admin/Creators/Index', [
-            'creators' => $creators,
-        ]);
+        return view('admin.creators.index', compact('creators'));
+    }
+
+    /**
+     * Display the specified creator.
+     */
+    public function show(User $creator): View
+    {
+        // Ensure the user is a creator
+        if ($creator->role !== UserRole::Creator) {
+            abort(404);
+        }
+
+        $shop = $creator->creatorShop()->with('creator')->first();
+        $privateInfo = CreatorPrivateInfo::where('creator_shop_id', $shop->id)->first();
+
+        return view('admin.creators.show', compact('shop', 'privateInfo'));
     }
 
     /**

@@ -79,7 +79,10 @@ class CreatorShop extends Model
             'follower_id',
             'user_id',  // Parent key on creator_shops table
             'id'        // Related key on users table
-        )->withTimestamps();
+        )
+            ->using(Follow::class)
+            ->withPivot('id')
+            ->withTimestamps();
     }
 
     /**

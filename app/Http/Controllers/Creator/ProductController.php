@@ -12,27 +12,42 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:creator', 'creator-onboarded']);
-    }
-
     /**
      * Display a listing of the creator's products.
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
-        $products = Product::where('creator_id', $request->user()->id)
-            ->with('images')
-            ->latest()
-            ->paginate(20);
+        $query = Product::where('creator_id', $request->user()->id)
+            ->withCount('bids')
+            ->with('images');
 
-        return Inertia::render('Creator/Products/Index', [
+        // Apply search filter
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // Apply status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Apply category filter
+        if ($request->filled('category')) {
+            $query->where('category', 'like', '%' . $request->category . '%');
+        }
+
+        // Apply sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        $query->orderBy($sortBy, $sortDirection);
+
+        $products = $query->paginate(20)->withQueryString();
+
+        return view('creator.products.index', [
             'products' => $products,
         ]);
     }
@@ -40,9 +55,9 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new product.
      */
-    public function create(): Response
+    public function create()
     {
-        return Inertia::render('Creator/Products/Create');
+        return view('creator.products.create');
     }
 
     /**
@@ -104,13 +119,13 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified product.
      */
-    public function edit(Product $product): Response
+    public function edit(Product $product)
     {
         $this->authorize('manage-creator-shop', $product->creator->creatorShop);
 
         $product->load('images');
 
-        return Inertia::render('Creator/Products/Edit', [
+        return view('creator.products.edit', [
             'product' => $product,
         ]);
     }
@@ -150,39 +165,3 @@ class ProductController extends Controller
             ->with('success', 'Product deleted successfully!');
     }
 }
-
-    /**
-     * Display the leaderboard for a closed auction.
-     */
-    public function leaderboard(Request $request, Product $product): Response
-    {
-        // Load all bids for the closed auction
-        $bids = $product->bids()
-            ->with('user')
-            ->orderBy('amount', 'desc')
-            ->get();
-
-        $isAdmin = $request->user() && $request->user()->role === \App\Enums\UserRole::Admin;
-
-        // Calculate ranks and conditionally show amounts
-        $leaderboardData = $bids->map(function ($bid, $index) use ($isAdmin) {
-            $data = [
-                'rank' => $index + 1,
-                'user_name' => $bid->user->name,
-                'is_winner' => $index === 0,
-            ];
-
-            // Only show amounts to admins
-            if ($isAdmin) {
-                $data['amount'] = $bid->amount;
-            }
-
-            return $data;
-        });
-
-        return Inertia::render('Products/Leaderboard', [
-            'product' => $product,
-            'leaderboard' => $leaderboardData,
-            'isAdmin' => $isAdmin,
-        ]);
-    }

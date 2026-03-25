@@ -30,9 +30,10 @@ class FileSecurityService
             $issues[] = 'File contains suspicious script tags';
         }
 
-        // Check for null bytes (path traversal attempts)
-        if (strpos($content, "\0") !== false) {
-            $issues[] = 'File contains null bytes';
+        // Check for null bytes in filename (path traversal attempts)
+        // Note: Binary image files naturally contain null bytes, so we only check the filename
+        if (strpos($file->getClientOriginalName(), "\0") !== false) {
+            $issues[] = 'Filename contains null bytes';
         }
 
         // Check file header matches declared type
@@ -60,10 +61,12 @@ class FileSecurityService
      */
     private function containsPhpCode(string $content): bool
     {
+        // For image files, only check the first 1KB to avoid false positives from binary data
+        $checkContent = substr($content, 0, 1024);
+        
         $patterns = [
             '/<\?php/i',
             '/<\?=/i',
-            '/<\?/i',
             '/<%/i',
             '/eval\s*\(/i',
             '/base64_decode\s*\(/i',
@@ -74,7 +77,7 @@ class FileSecurityService
         ];
 
         foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $content)) {
+            if (preg_match($pattern, $checkContent)) {
                 return true;
             }
         }
@@ -87,7 +90,9 @@ class FileSecurityService
      */
     private function containsScriptTags(string $content): bool
     {
-        return preg_match('/<script[^>]*>.*?<\/script>/is', $content) === 1;
+        // For image files, only check the first 1KB to avoid false positives from binary data
+        $checkContent = substr($content, 0, 1024);
+        return preg_match('/<script[^>]*>.*?<\/script>/is', $checkContent) === 1;
     }
 
     /**

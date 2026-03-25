@@ -22,7 +22,7 @@ class CreatorOnboardingTest extends TestCase
         $response = $this->actingAs($creator)->get(route('creator.onboarding'));
 
         $response->assertOk();
-        $response->assertInertia(fn ($page) => $page->component('Creator/Onboarding'));
+        $response->assertViewIs('creator.onboarding');
     }
 
     public function test_non_creator_cannot_access_onboarding(): void

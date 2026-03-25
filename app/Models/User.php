@@ -12,12 +12,39 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Cashier\Billable;
-
+use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, Billable;
+    use HasFactory, Notifiable;
+
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +56,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'preferences',
     ];
 
     /**
@@ -52,6 +80,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'preferences' => 'array',
         ];
     }
 
@@ -77,6 +106,8 @@ class User extends Authenticatable
     public function follows(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'creator_id')
+            ->using(Follow::class)
+            ->withPivot('id')
             ->withTimestamps();
     }
 
@@ -110,5 +141,35 @@ class User extends Authenticatable
     public function scopeBuyers(Builder $query): void
     {
         $query->where('role', UserRole::Buyer);
+    }
+
+    /**
+     * Check if the user has a specific role.
+     */
+    public function hasRole(string|UserRole $role): bool
+    {
+        if (is_string($role)) {
+            $role = UserRole::from($role);
+        }
+
+        return $this->role === $role;
+    }
+
+    /**
+     * Get a preference value.
+     */
+    public function getPreference(string $key, mixed $default = null): mixed
+    {
+        return data_get($this->preferences, $key, $default);
+    }
+
+    /**
+     * Set a preference value.
+     */
+    public function setPreference(string $key, mixed $value): void
+    {
+        $preferences = $this->preferences ?? [];
+        data_set($preferences, $key, $value);
+        $this->preferences = $preferences;
     }
 }

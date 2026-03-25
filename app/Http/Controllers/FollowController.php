@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 
 class FollowController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Follow a creator.
      */
@@ -21,11 +16,17 @@ class FollowController extends Controller
     {
         $follower = $request->user();
 
+        if ($follower->id === $creator->id) {
+            return redirect()->back()->with('error', 'You cannot follow yourself.');
+        }
+
         // Create follow relationship
-        $follower->follows()->attach($creator->id);
+        $wasAttached = $follower->follows()->syncWithoutDetaching([$creator->id]);
 
         // Dispatch notification to creator
-        SendNewFollowerNotification::dispatch($creator, $follower);
+        if (!empty($wasAttached['attached'])) {
+            SendNewFollowerNotification::dispatch($creator, $follower);
+        }
 
         return redirect()->back()->with('success', 'You are now following this creator!');
     }

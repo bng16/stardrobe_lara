@@ -1,0 +1,10 @@
+# Utility Components Directory
+
+This file maintains the directory structure. Remove when components are added.
+
+Planned components:
+- status-badge.blade.php
+- format-date.blade.php
+- format-currency.blade.php
+- empty-state.blade.php
+- progress-bar.blade.php

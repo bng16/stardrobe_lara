@@ -1,0 +1,13 @@
+e when components are added.
+
+Planned components:
+- table.blade.php
+- modal.blade.php
+- dropdown.blade.php
+- tabs.blade.php
+- accordion.blade.php
+- auction-card.blade.php
+- creator-card.blade.php
+- stats-card.blade.php# Complex Components Directory
+
+This file maintains the directory structure. Remov

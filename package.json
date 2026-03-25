@@ -20,8 +20,10 @@
         "laravel-vite-plugin": "^2.0.0",
         "postcss": "^8.5.8",
         "tailwindcss": "^4.2.2",
+        "terser": "^5.46.1",
         "typescript": "^5.9.3",
-        "vite": "^7.0.7"
+        "vite": "^7.0.7",
+        "vite-plugin-compression2": "^2.5.3"
     },
     "dependencies": {
         "@inertiajs/react": "^2.3.18",

@@ -5,24 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\AuctionImportService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct()
     {
-        $this->middleware(['auth', 'role:admin']);
+        // Middleware is handled by routes, not in constructor
     }
 
     /**
      * Display the admin dashboard with auction statistics.
      */
-    public function index(): Response
+    public function index(): View
     {
         $this->authorize('admin-dashboard');
 
@@ -45,10 +47,7 @@ class DashboardController extends Controller
             ->latest()
             ->paginate(20);
 
-        return Inertia::render('Admin/Dashboard', [
-            'statistics' => $statistics,
-            'auctions' => $auctions,
-        ]);
+        return view('admin.dashboard', compact('statistics', 'auctions'));
     }
 
     /**

@@ -188,13 +188,14 @@ class FileUploadSecurityTest extends TestCase
     {
         $service = new FileSecurityService();
         
-        // Create a file with null bytes
-        $maliciousContent = "image.jpg\0.php";
+        // Create a file with null bytes in filename (path traversal attempt)
+        $maliciousContent = "Valid image content";
         $tempFile = tmpfile();
         fwrite($tempFile, $maliciousContent);
         $tempPath = stream_get_meta_data($tempFile)['uri'];
         
-        $file = new UploadedFile($tempPath, 'malicious.jpg', 'image/jpeg', null, true);
+        // Use a filename with null byte
+        $file = new UploadedFile($tempPath, "image.jpg\0.php", 'image/jpeg', null, true);
         
         $result = $service->scanFile($file);
         

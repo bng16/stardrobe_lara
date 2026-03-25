@@ -1,0 +1,12 @@
+# Navigation Components Directory
+
+This file maintains the directory structure. Remove when components are added.
+
+Planned components:
+- navbar.blade.php
+- sidebar.blade.php
+- breadcrumb.blade.php
+- pagination.blade.php
+- nav-item.blade.php
+- nav-dropdown.blade.php
+- admin-sidebar.blade.php

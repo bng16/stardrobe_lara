@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Asset URL
+    |--------------------------------------------------------------------------
+    |
+    | The asset URL is used to generate URLs for your assets. This is useful
+    | when using a CDN to serve your assets. Set the ASSET_URL environment
+    | variable to your CDN domain (e.g., https://cdn.example.com).
+    |
+    */
+
+    'asset_url' => env('ASSET_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

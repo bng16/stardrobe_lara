@@ -1,0 +1,10 @@
+# Layout Components Directory
+
+This file maintains the directory structure. Remove when components are added.
+
+Planned components:
+- page-header.blade.php
+- container.blade.php
+- grid.blade.php
+- admin-page.blade.php
+- dashboard-grid.blade.php

@@ -1,0 +1,14 @@
+# Forms Components Directory
+
+This file maintains the directory structure. Remove when components are added.
+
+Planned components:
+- form.blade.php
+- input.blade.php
+- textarea.blade.php
+- select.blade.php
+- checkbox.blade.php
+- radio.blade.php
+- form-group.blade.php
+- label.blade.php
+- error.blade.php

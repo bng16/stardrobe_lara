@@ -1,0 +1,14 @@
+# UI Components Directory
+
+This file maintains the directory structure. Remove when components are added.
+
+Planned components:
+- button.blade.php
+- card.blade.php
+- card-header.blade.php
+- card-content.blade.php
+- card-footer.blade.php
+- alert.blade.php
+- badge.blade.php
+- loading.blade.php
+- skeleton.blade.php

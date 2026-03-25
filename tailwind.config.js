@@ -8,6 +8,18 @@ export default {
     "./resources/**/*.ts",
     "./resources/**/*.tsx",
     "./resources/**/*.vue",
+    "./app/View/Components/**/*.php",
+    "./storage/framework/views/*.php",
+  ],
+  // Safelist for dynamically generated classes
+  safelist: [
+    // Alert variants
+    'bg-blue-50', 'bg-green-50', 'bg-yellow-50', 'bg-red-50',
+    'text-blue-800', 'text-green-800', 'text-yellow-800', 'text-red-800',
+    'border-blue-200', 'border-green-200', 'border-yellow-200', 'border-red-200',
+    // Button variants that might be dynamic
+    'bg-blue-600', 'bg-gray-100', 'bg-red-600',
+    'hover:bg-blue-700', 'hover:bg-gray-200', 'hover:bg-red-700',
   ],
   theme: {
     container: {
